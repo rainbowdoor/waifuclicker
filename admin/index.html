@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WaifuClicker — Админ</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0a1a;--bg2:#16102b;--bg3:#1e1738;--accent:#b76cff;--accent2:#ff6cb7;--gold:#FFD700;--gem:#60cfff;--text:#f0eaff;--text2:rgba(240,234,255,.55);--border:rgba(183,108,255,.18);--card:rgba(255,255,255,.05);--r:14px;--rs:8px;--ok:rgba(80,200,120,.15);--okb:rgba(80,200,120,.4);--bad:rgba(220,60,60,.15);--badb:rgba(220,60,60,.4)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;min-height:100vh}
+a{color:var(--accent);text-decoration:none}
+.layout{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:20px 0;position:sticky;top:0;height:100vh;display:flex;flex-direction:column}
+.logo{padding:0 18px 20px;border-bottom:1px solid var(--border)}
+.logo h1{font-family:'Orbitron',sans-serif;font-size:13px;color:var(--accent)}
+.logo p{font-size:11px;color:var(--text2);margin-top:3px}
+.nav{padding:12px 0;flex:1}
+.ni{display:flex;align-items:center;gap:8px;padding:9px 18px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;transition:all .2s;border-left:2px solid transparent}
+.ni:hover{color:var(--text);background:var(--card)}
+.ni.active{color:var(--accent);border-left-color:var(--accent);background:rgba(183,108,255,.06)}
+.sb-bottom{padding:14px 18px 0;border-top:1px solid var(--border)}
+.back{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer;padding:6px 0;transition:color .2s}
+.back:hover{color:var(--accent)}
+.main{padding:28px 32px;overflow-y:auto}
+.ph{margin-bottom:24px}
+.ph h2{font-family:'Orbitron',sans-serif;font-size:18px;color:var(--text)}
+.ph p{font-size:13px;color:var(--text2);margin-top:5px}
+.page{display:none}.page.active{display:block}
+
+/* stats */
+.srow{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:22px}
+.sbox{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px}
+.sbox .lbl{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text2);margin-bottom:5px}
+.sbox .val{font-size:24px;font-weight:900;font-family:'Orbitron',sans-serif}
+.val.a{color:var(--accent)}.val.g{color:var(--gold)}.val.b{color:var(--gem)}
+
+/* card */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:18px}
+.ct{font-size:13px;font-weight:700;color:var(--text);margin-bottom:16px}
+
+/* form */
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.full{grid-column:1/-1}
+label{font-size:11px;color:var(--text2);font-weight:700;text-transform:uppercase;letter-spacing:.8px}
+input,select,textarea{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:'Nunito',sans-serif;font-size:13px;padding:8px 11px;outline:none;width:100%;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+select option{background:var(--bg2)}
+textarea{resize:vertical;min-height:60px}
+.hint{font-size:11px;color:var(--text2);margin-top:2px}
+
+/* btns */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:var(--rs);font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;transition:all .2s;border:none}
+.bp{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.bp:hover{opacity:.88}
+.bs{background:var(--card);border:1px solid var(--border);color:var(--text)}
+.bs:hover{background:rgba(183,108,255,.1);border-color:var(--accent)}
+.bd{background:var(--bad);border:1px solid var(--badb);color:#ff6060}
+.bd:hover{background:rgba(220,60,60,.25)}
+.btn-sm{padding:5px 12px;font-size:12px}
+
+/* table */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{border-bottom:1px solid var(--border)}
+th{padding:9px 12px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2)}
+td{padding:11px 12px;border-bottom:1px solid rgba(183,108,255,.07);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--card)}
+.thumb{width:40px;height:52px;object-fit:cover;border-radius:6px;border:1px solid var(--border);background:var(--bg3)}
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700}
+.ba{background:rgba(183,108,255,.2);color:#c89aff}
+.bg2{background:rgba(96,207,255,.2);color:var(--gem)}
+.bssr{background:rgba(255,215,0,.15);color:var(--gold)}
+.bsr{background:rgba(183,108,255,.15);color:var(--accent)}
+.br{background:rgba(96,207,255,.15);color:var(--gem)}
+.bn{background:var(--card);color:var(--text2)}
+.bdef{background:var(--ok);color:#50c878}
+.bon{background:rgba(80,200,120,.2);color:#50c878}
+.boff{background:var(--bad);color:#ff6060}
+
+/* code */
+.code{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:14px;font-family:monospace;font-size:12px;color:#c8b8ff;line-height:1.7;overflow-x:auto;white-space:pre}
+
+/* alert */
+.alert{padding:10px 14px;border-radius:var(--rs);font-size:13px;margin-bottom:14px;display:none}
+.alert.ok{background:var(--ok);border:1px solid var(--okb);color:#80ff80}
+.alert.err{background:var(--bad);border:1px solid var(--badb);color:#ff8080}
+.alert.show{display:block}
+
+/* preview */
+.prev-box{width:100%;aspect-ratio:3/4;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.prev-box img{width:100%;height:100%;object-fit:cover}
+.prev-ph{color:var(--text2);font-size:12px;text-align:center;padding:10px}
+
+/* channel cards */
+.ch-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.ch-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px}
+.ch-icon{font-size:28px;width:40px;text-align:center;flex-shrink:0}
+.ch-body{flex:1;min-width:0}
+.ch-title{font-size:13px;font-weight:700;color:var(--text)}
+.ch-meta{font-size:11px;color:var(--text2);margin-top:3px}
+.ch-reward{font-size:12px;color:var(--accent);margin-top:4px;font-weight:700}
+.ch-actions{display:flex;gap:6px;flex-shrink:0}
+
+/* reward type pill */
+.rtype{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;margin-left:6px}
+.rtype.pct{background:rgba(255,200,80,.15);color:#ffc850}
+.rtype.gems{background:rgba(96,207,255,.15);color:var(--gem)}
+.rtype.coins{background:rgba(255,215,0,.15);color:var(--gold)}
+
+/* tabs inside page */
+.ptabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px}
+.ptab{padding:9px 18px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text2);font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;transition:all .2s;margin-bottom:-1px}
+.ptab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.ptab-content{display:none}.ptab-content.active{display:block}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <h1>★ WaifuClicker</h1>
+    <p>Панель администратора</p>
+  </div>
+  <nav class="nav">
+    <div class="ni active" data-p="dashboard">◈ Обзор</div>
+    <div class="ni" data-p="characters">♡ Персонажи</div>
+    <div class="ni" data-p="add-char">+ Добавить персонажа</div>
+    <div class="ni" data-p="channels">📋 Задания / Каналы</div>
+    <div class="ni" data-p="instructions">❓ Инструкция</div>
+  </nav>
+  <div class="sb-bottom">
+    <a href="../index.html" class="back">← В игру</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ═══ DASHBOARD ═══ -->
+<div class="page active" id="page-dashboard">
+  <div class="ph"><h2>Обзор</h2><p>Статистика и быстрое управление</p></div>
+  <div class="srow">
+    <div class="sbox"><div class="lbl">Персонажей</div><div class="val a" id="st-total">—</div></div>
+    <div class="sbox"><div class="lbl">Аниме</div><div class="val" id="st-anime">—</div></div>
+    <div class="sbox"><div class="lbl">Игровые</div><div class="val b" id="st-game">—</div></div>
+    <div class="sbox"><div class="lbl">SSR</div><div class="val g" id="st-ssr">—</div></div>
+    <div class="sbox"><div class="lbl">Заданий</div><div class="val a" id="st-tasks">—</div></div>
+  </div>
+  <div class="card">
+    <div class="ct">Быстрые действия</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn bp" onclick="goPage('add-char')">+ Персонаж</button>
+      <button class="btn bp" onclick="goPage('channels')">+ Задание</button>
+      <button class="btn bs" onclick="goPage('characters')">Список персонажей</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">Редкости</div>
+    <div id="rbreak" style="display:flex;gap:10px;flex-wrap:wrap"></div>
+  </div>
+</div>
+
+<!-- ═══ CHARACTERS LIST ═══ -->
+<div class="page" id="page-characters">
+  <div class="ph"><h2>Все персонажи</h2><p>Просмотр, фильтрация и быстрое редактирование</p></div>
+  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
+    <div id="charFilters" style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn bs btn-sm active-f" data-f="all">Все</button>
+      <button class="btn bs btn-sm" data-f="anime">Аниме</button>
+      <button class="btn bs btn-sm" data-f="game">Игровые</button>
+      <button class="btn bs btn-sm" data-f="SSR">SSR</button>
+      <button class="btn bs btn-sm" data-f="SR">SR</button>
+    </div>
+    <div style="flex:1"></div>
+    <button class="btn bp btn-sm" onclick="goPage('add-char')">+ Добавить</button>
+  </div>
+  <div class="card" style="padding:0">
+    <div class="tw">
+      <table>
+        <thead><tr>
+          <th style="width:52px">Арт</th>
+          <th>Имя / ID</th><th>Кат.</th><th>Редкость</th>
+          <th>Клик</th><th>Сек</th><th>Цена</th><th>Действие</th>
+        </tr></thead>
+        <tbody id="charTbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ADD CHARACTER ═══ -->
+<div class="page" id="page-add-char">
+  <div class="ph"><h2>Добавить / Редактировать персонажа</h2><p>Заполни форму → получи готовый код</p></div>
+  <div id="addAlert" class="alert"></div>
+  <div style="display:grid;grid-template-columns:1fr 200px;gap:18px;align-items:start">
+    <div>
+      <div class="card">
+        <div class="ct">Основная информация</div>
+        <div class="fg2">
+          <div class="fg"><label>ID *</label><input id="f-id" placeholder="sakura_2" oninput="this.value=this.value.replace(/[^a-z0-9_]/gi,'_').toLowerCase();genCode()"><span class="hint">Только a-z, 0-9, _</span></div>
+          <div class="fg"><label>Имя *</label><input id="f-name" placeholder="Сакура" oninput="genCode();updPrev()"></div>
+          <div class="fg"><label>Категория</label><select id="f-cat" onchange="genCode();updPrev()"><option value="anime">Аниме</option><option value="game">Игровой</option></select></div>
+          <div class="fg"><label>Редкость</label><select id="f-rar" onchange="genCode();updPrev()"><option value="N">N — обычный</option><option value="R">R — редкий</option><option value="SR" selected>SR — супер редкий</option><option value="SSR">SSR — ультра редкий</option></select></div>
+          <div class="fg full"><label>Путь к картинке *</label><input id="f-img" placeholder="images/anime/sakura2.png" oninput="genCode();prevImg()"><span class="hint">Файл в images/anime/ или images/game/, или внешний URL</span></div>
+          <div class="fg full"><label>Описание</label><textarea id="f-desc" placeholder="Расскажи об этом персонаже..." oninput="genCode()"></textarea></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ct">Статы и цены</div>
+        <div class="fg3">
+          <div class="fg"><label>Бонус за клик</label><input type="number" id="f-click" value="1" min="0" oninput="genCode()"></div>
+          <div class="fg"><label>Бонус в сек</label><input type="number" id="f-cps" value="0" min="0" oninput="genCode()"></div>
+          <div class="fg"><label>Цена монеты</label><input type="number" id="f-price" value="500" min="0" oninput="genCode()"><span class="hint">0 = бесплатно</span></div>
+          <div class="fg"><label>Цена кристаллы</label><input type="number" id="f-gem" value="0" min="0" oninput="genCode()"><span class="hint">0 = не за кристаллы</span></div>
+          <div class="fg"><label>Стартовый?</label><select id="f-def" onchange="genCode()"><option value="false">Нет (покупается)</option><option value="true">Да (сразу открыт)</option></select></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ct">Готовый код — вставь в js/characters.js</div>
+        <div class="code" id="genCode">// Заполни форму...</div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="btn bp" onclick="copyCode()">Копировать код</button>
+          <button class="btn bs" onclick="resetForm()">Очистить</button>
+        </div>
+      </div>
+    </div>
+    <div style="position:sticky;top:24px">
+      <div class="card">
+        <div class="ct">Превью</div>
+        <div class="prev-box"><img id="prevImg" src="" alt="" style="display:none"><div class="prev-ph" id="prevPh">Укажи путь</div></div>
+        <div style="margin-top:10px">
+          <div style="font-size:14px;font-weight:700;color:var(--text)" id="prev-name">—</div>
+          <div style="font-size:12px;color:var(--gold);margin-top:3px" id="prev-rar">—</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:2px" id="prev-cat">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CHANNELS / TASKS ═══ -->
+<div class="page" id="page-channels">
+  <div class="ph"><h2>Задания и каналы</h2><p>Управляй заданиями для подписки и наградами</p></div>
+
+  <div class="ptabs">
+    <button class="ptab active" data-pt="ch-list">Список заданий</button>
+    <button class="ptab" data-pt="ch-add">Добавить задание</button>
+    <button class="ptab" data-pt="ch-guide">Как работает</button>
+  </div>
+
+  <!-- LIST -->
+  <div class="ptab-content active" id="pt-ch-list">
+    <div id="chList" class="ch-list"></div>
+    <button class="btn bp" onclick="switchPtab('ch-add')">+ Добавить задание</button>
+  </div>
+
+  <!-- ADD -->
+  <div class="ptab-content" id="pt-ch-add">
+    <div id="chAlert" class="alert"></div>
+    <div class="card">
+      <div class="ct">Новое задание</div>
+      <div class="fg2">
+        <div class="fg"><label>ID задания *</label><input id="ch-id" placeholder="ch4" oninput="this.value=this.value.replace(/[^a-z0-9_]/gi,'_').toLowerCase();genChCode()"></div>
+        <div class="fg"><label>Иконка</label><input id="ch-icon" placeholder="🎬" oninput="genChCode()"></div>
+        <div class="fg full"><label>Название задания *</label><input id="ch-title" placeholder="Подпишись на наш TikTok канал" oninput="genChCode()"></div>
+        <div class="fg full"><label>Описание (необязательно)</label><input id="ch-desc" placeholder="Аниме контент каждый день" oninput="genChCode()"></div>
+        <div class="fg full"><label>Username канала * (@channel или числовой ID)</label><input id="ch-chanid" placeholder="@your_channel" oninput="genChCode()"></div>
+        <div class="fg full"><label>Ссылка для подписки *</label><input id="ch-url" placeholder="https://t.me/your_channel" oninput="genChCode()"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">Тип и размер награды</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px">
+        <div class="fg"><label>Тип награды</label>
+          <select id="ch-rtype" onchange="toggleRewardFields();genChCode()">
+            <option value="clicks_percent">% от кликов игрока (рекомендуется)</option>
+            <option value="coins">Фиксированные монеты</option>
+            <option value="gems">Фиксированные кристаллы</option>
+          </select>
+        </div>
+        <div class="fg"><label id="ch-rval-lbl">Процент от кликов</label>
+          <input type="number" id="ch-rval" value="20" min="1" max="100" oninput="genChCode()">
+          <span class="hint" id="ch-rval-hint">10–30% — оптимально</span>
+        </div>
+        <div class="fg" id="ch-min-wrap"><label>Минимальная награда</label>
+          <input type="number" id="ch-min" value="500" min="0" oninput="genChCode()">
+          <span class="hint">Для новых игроков</span>
+        </div>
+      </div>
+      <div style="background:rgba(183,108,255,.08);border:1px solid rgba(183,108,255,.2);border-radius:var(--rs);padding:12px;font-size:12px;color:var(--text2);line-height:1.7" id="rewardPreview">
+        Награда будет рассчитана динамически.
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">Готовый код — вставь в js/channels.js</div>
+      <div class="code" id="chCode">// Заполни форму...</div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn bp" onclick="copyChCode()">Копировать</button>
+        <button class="btn bs" onclick="resetChForm()">Очистить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GUIDE -->
+  <div class="ptab-content" id="pt-ch-guide">
+    <div class="card">
+      <div class="ct">Как работает система наград</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
+        <div style="background:rgba(255,200,80,.06);border:1px solid rgba(255,200,80,.2);border-radius:10px;padding:14px">
+          <div style="color:#ffc850;font-weight:700;margin-bottom:8px;font-size:13px">% от кликов ⭐</div>
+          <p style="font-size:12px;color:var(--text2);line-height:1.7">Награда = X% от общего числа кликов игрока. Новичок с 1000 кликами при 20% получит 200 монет. Ветеран с 1M кликами — 200K. <strong style="color:var(--text)">Все игроки получают ощутимый буст!</strong></p>
+        </div>
+        <div style="background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-radius:10px;padding:14px">
+          <div style="color:var(--gold);font-weight:700;margin-bottom:8px;font-size:13px">Монеты ★</div>
+          <p style="font-size:12px;color:var(--text2);line-height:1.7">Фиксированная сумма для всех. Хорошо для старта — все получают одинаково. Слабо мотивирует ветеранов.</p>
+        </div>
+        <div style="background:rgba(96,207,255,.06);border:1px solid rgba(96,207,255,.2);border-radius:10px;padding:14px">
+          <div style="color:var(--gem);font-weight:700;margin-bottom:8px;font-size:13px">Кристаллы ◆</div>
+          <p style="font-size:12px;color:var(--text2);line-height:1.7">Фиксированное число кристаллов. Сильная мотивация — кристаллы нужны для гачи. Используй для главного канала.</p>
+        </div>
+      </div>
+      <p style="font-size:13px;color:var(--text2);line-height:1.7">
+        <strong style="color:var(--text)">Рекомендация:</strong> Используй <strong style="color:#ffc850">% от кликов</strong> для большинства заданий с параметром 15–25% и минимальной наградой 300–500. Так и новичок, и ветеран получат ощутимый буст. Для главного канала дай <strong style="color:var(--gem)">25–50 кристаллов</strong>.
+      </p>
+    </div>
+    <div class="card">
+      <div class="ct">Как добавить задание</div>
+      <ol style="font-size:13px;color:var(--text2);line-height:2.2;padding-left:18px">
+        <li>Перейди во вкладку <strong style="color:var(--accent)">Добавить задание</strong></li>
+        <li>Заполни все поля</li>
+        <li>Нажми <strong style="color:var(--accent)">Копировать</strong></li>
+        <li>Открой <code style="color:var(--accent)">js/channels.js</code></li>
+        <li>Найди строку с комментарием <code style="color:var(--accent)">// ШАБЛОН</code></li>
+        <li>Вставь скопированный код перед закрывающей <code style="color:var(--accent)">]</code></li>
+        <li>Сохрани файл и загрузи на GitHub</li>
+      </ol>
+    </div>
+    <div class="card">
+      <div class="ct">Важно: бот должен быть администратором канала</div>
+      <p style="font-size:13px;color:var(--text2);line-height:1.7">
+        Чтобы проверка подписки работала, твой Telegram бот должен быть добавлен в канал как <strong style="color:var(--text)">администратор</strong>.<br><br>
+        Как добавить:<br>
+        1. Открой канал → Управление каналом → Администраторы<br>
+        2. Добавить администратора → найди своего бота<br>
+        3. Дай права "Добавлять подписчиков" (минимальные права)
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ INSTRUCTIONS ═══ -->
+<div class="page" id="page-instructions">
+  <div class="ph"><h2>Полная инструкция</h2><p>Пошаговый запуск за 30 минут</p></div>
+
+  <div class="card">
+    <div class="ct">Шаг 1 — GitHub Pages (бесплатный хостинг)</div>
+    <ol style="font-size:13px;color:var(--text2);line-height:2.2;padding-left:18px">
+      <li>Зарегистрируйся на <a href="https://github.com" target="_blank">github.com</a></li>
+      <li>Нажми <strong style="color:var(--text)">+</strong> → <strong style="color:var(--text)">New repository</strong></li>
+      <li>Назови: <code style="color:var(--accent)">waifuclicker</code>, поставь <strong style="color:var(--text)">Public</strong> → <strong style="color:var(--text)">Create</strong></li>
+      <li>Нажми <strong style="color:var(--text)">uploading an existing file</strong> и перетащи ВСЕ файлы проекта</li>
+      <li><strong style="color:var(--text)">Settings</strong> → <strong style="color:var(--text)">Pages</strong> → Source: <code style="color:var(--accent)">main</code> → <code style="color:var(--accent)">/ (root)</code> → <strong style="color:var(--text)">Save</strong></li>
+      <li>Через ~2 минуты игра будет на <code style="color:var(--accent)">https://ИМЯ.github.io/waifuclicker/</code></li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <div class="ct">Шаг 2 — Создай Telegram бота</div>
+    <ol style="font-size:13px;color:var(--text2);line-height:2.2;padding-left:18px">
+      <li>Открой Telegram → найди <code style="color:var(--accent)">@BotFather</code></li>
+      <li>Напиши <code style="color:var(--accent)">/newbot</code></li>
+      <li>Введи название: <code style="color:var(--accent)">WaifuClicker</code></li>
+      <li>Введи username: <code style="color:var(--accent)">waifu_clicker_bot</code> (придумай своё)</li>
+      <li>Сохрани полученный <strong style="color:var(--gold)">TOKEN</strong></li>
+      <li>В <code style="color:var(--accent)">js/game.js</code> замени строку <code style="color:var(--accent)">waifu_clicker_bot</code> на свой username</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <div class="ct">Шаг 3 — Подключи Mini App к боту</div>
+    <ol style="font-size:13px;color:var(--text2);line-height:2.2;padding-left:18px">
+      <li>В BotFather напиши <code style="color:var(--accent)">/mybots</code> → выбери бота</li>
+      <li><strong style="color:var(--text)">Bot Settings</strong> → <strong style="color:var(--text)">Menu Button</strong> → <strong style="color:var(--text)">Edit Menu Button</strong></li>
+      <li>Введи URL: <code style="color:var(--accent)">https://ИМЯ.github.io/waifuclicker/</code></li>
+      <li>Текст кнопки: <code style="color:var(--accent)">Играть ▶</code></li>
+      <li>Теперь в боте появится кнопка открывающая игру!</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <div class="ct">Шаг 4 — Бэкенд на Render.com (для Stars и лидеров)</div>
+    <ol style="font-size:13px;color:var(--text2);line-height:2.2;padding-left:18px">
+      <li>Зарегистрируйся на <a href="https://render.com" target="_blank">render.com</a></li>
+      <li>Создай новый <strong style="color:var(--text)">Web Service</strong> → подключи GitHub репозиторий</li>
+      <li>Build Command: <code style="color:var(--accent)">npm install</code></li>
+      <li>Start Command: <code style="color:var(--accent)">node server.js</code></li>
+      <li>Добавь переменную окружения: <code style="color:var(--accent)">BOT_TOKEN</code> = твой токен</li>
+      <li>После деплоя скопируй URL сервера</li>
+      <li>Замени в <code style="color:var(--accent)">js/game.js</code> строку <code style="color:var(--accent)">API_URL</code> на свой URL</li>
+      <li>Установи webhook: открой <code style="color:var(--accent)">https://твой-сервер.onrender.com/api/set-webhook?host=https://твой-сервер.onrender.com</code></li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <div class="ct">Шаг 5 — Добавь бота в свои каналы</div>
+    <ol style="font-size:13px;color:var(--text2);line-height:2.2;padding-left:18px">
+      <li>Открой каждый канал из заданий</li>
+      <li>Управление → Администраторы → Добавить</li>
+      <li>Найди своего бота и добавь его</li>
+      <li>Минимальные права — только "Добавлять участников"</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <div class="ct">Шаг 6 — Замена картинок персонажей</div>
+    <ol style="font-size:13px;color:var(--text2);line-height:2.2;padding-left:18px">
+      <li>Подготовь картинку (PNG/WebP, 300×400px, пропорции 3:4)</li>
+      <li>Загрузи в <code style="color:var(--accent)">images/anime/</code> или <code style="color:var(--accent)">images/game/</code></li>
+      <li>Открой <code style="color:var(--accent)">js/characters.js</code></li>
+      <li>Найди персонажа по <code style="color:var(--accent)">id</code> или <code style="color:var(--accent)">name</code></li>
+      <li>Измени строку <code style="color:var(--accent)">image: "..."</code></li>
+      <li>Загрузи на GitHub</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <div class="ct">Структура файлов</div>
+    <div class="code">anime-clicker/
+├── index.html          ← игра
+├── server.js           ← бэкенд (деплоить на Render)
+├── package.json        ← зависимости бэкенда
+├── admin/
+│   └── index.html      ← эта панель
+├── css/
+│   └── game.css
+├── js/
+│   ├── characters.js   ← ПЕРСОНАЖИ (редактируй!)
+│   ├── channels.js     ← ЗАДАНИЯ (редактируй!)
+│   └── game.js         ← логика игры
+└── images/
+    ├── anime/          ← картинки аниме
+    └── game/           ← картинки игровых</div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script src="../js/characters.js"></script>
+<script src="../js/channels.js"></script>
+<script>
+/* NAV */
+function goPage(name){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".ni").forEach(n=>n.classList.remove("active"));
+  document.getElementById("page-"+name).classList.add("active");
+  document.querySelector(`[data-p="${name}"]`).classList.add("active");
+  if(name==="characters")renderChars();
+  if(name==="dashboard")renderDash();
+  if(name==="channels")renderChList();
+}
+document.querySelectorAll(".ni[data-p]").forEach(ni=>ni.onclick=()=>goPage(ni.dataset.p));
+
+/* PTABS */
+function switchPtab(name){
+  document.querySelectorAll(".ptab").forEach(t=>t.classList.remove("active"));
+  document.querySelectorAll(".ptab-content").forEach(t=>t.classList.remove("active"));
+  document.querySelector(`[data-pt="${name}"]`).classList.add("active");
+  document.getElementById("pt-"+name).classList.add("active");
+}
+document.querySelectorAll(".ptab[data-pt]").forEach(t=>t.onclick=()=>switchPtab(t.dataset.pt));
+
+/* DASHBOARD */
+function renderDash(){
+  const all=CHARACTERS.length, an=CHARACTERS.filter(c=>c.category==="anime").length;
+  const gm=CHARACTERS.filter(c=>c.category==="game").length, ssr=CHARACTERS.filter(c=>c.rarity==="SSR").length;
+  const tasks=(typeof CHANNELS!=="undefined"?CHANNELS:[]).filter(c=>c.active).length;
+  document.getElementById("st-total").textContent=all;
+  document.getElementById("st-anime").textContent=an;
+  document.getElementById("st-game").textContent=gm;
+  document.getElementById("st-ssr").textContent=ssr;
+  document.getElementById("st-tasks").textContent=tasks;
+  const rb=document.getElementById("rbreak"); rb.innerHTML="";
+  const cols={N:"#888",R:"#60cfff",SR:"#b76cff",SSR:"#FFD700"};
+  ["N","R","SR","SSR"].forEach(r=>{
+    const cnt=CHARACTERS.filter(c=>c.rarity===r).length;
+    rb.innerHTML+=`<div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 18px;text-align:center"><div style="font-size:20px;font-weight:900;color:${cols[r]}">${cnt}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">${RARITY_STARS[r]}</div></div>`;
+  });
+}
+
+/* CHARACTERS TABLE */
+let cfilt="all";
+function renderChars(){
+  const tbody=document.getElementById("charTbody"); tbody.innerHTML="";
+  const list=CHARACTERS.filter(c=>{
+    if(cfilt==="all")return true;
+    if(cfilt==="anime"||cfilt==="game")return c.category===cfilt;
+    return c.rarity===cfilt;
+  });
+  list.forEach(c=>{
+    const pStr=c.isDefault?`<span class="badge bdef">Старт</span>`:c.gemPrice>0?`<span style="color:var(--gem)">◆ ${c.gemPrice}</span>`:c.price>0?`<span style="color:var(--gold)">★ ${c.price}</span>`:"—";
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td><img class="thumb" src="../${c.image}" alt="${c.name}" onerror="this.style.opacity=.2"></td>
+      <td><strong>${c.name}</strong><br><span style="font-size:10px;color:var(--text2);font-family:monospace">${c.id}</span></td>
+      <td><span class="badge ${c.category==="anime"?"ba":"bg2"}">${c.category==="anime"?"Аниме":"Игровой"}</span></td>
+      <td><span class="badge b${c.rarity.toLowerCase()}">${RARITY_STARS[c.rarity]}</span></td>
+      <td style="color:var(--accent);font-weight:700">+${c.clickBonus}</td>
+      <td style="color:var(--text2)">+${c.cpsBonus}/с</td>
+      <td>${pStr}</td>
+      <td><button class="btn bs btn-sm" onclick="editChar('${c.id}')">✎ Ред.</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+document.querySelectorAll("#charFilters .btn").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("#charFilters .btn").forEach(x=>x.classList.remove("active-f"));
+  b.classList.add("active-f"); cfilt=b.dataset.f; renderChars();
+});
+function editChar(id){
+  const c=CHARACTERS.find(x=>x.id===id); if(!c)return;
+  goPage("add-char");
+  document.getElementById("f-id").value=c.id;
+  document.getElementById("f-name").value=c.name;
+  document.getElementById("f-cat").value=c.category;
+  document.getElementById("f-rar").value=c.rarity;
+  document.getElementById("f-img").value=c.image;
+  document.getElementById("f-desc").value=c.desc||"";
+  document.getElementById("f-click").value=c.clickBonus;
+  document.getElementById("f-cps").value=c.cpsBonus;
+  document.getElementById("f-price").value=c.price;
+  document.getElementById("f-gem").value=c.gemPrice;
+  document.getElementById("f-def").value=c.isDefault?"true":"false";
+  prevImg(); genCode(); updPrev();
+}
+
+/* CHAR FORM */
+function updPrev(){
+  document.getElementById("prev-name").textContent=document.getElementById("f-name").value||"—";
+  const r=document.getElementById("f-rar").value;
+  document.getElementById("prev-rar").textContent=RARITY_STARS[r]||r;
+  document.getElementById("prev-cat").textContent=document.getElementById("f-cat").value==="anime"?"Аниме":"Игровой";
+}
+function prevImg(){
+  const p=document.getElementById("f-img").value.trim();
+  const img=document.getElementById("prevImg"),ph=document.getElementById("prevPh");
+  if(!p){img.style.display="none";ph.style.display="block";ph.textContent="Укажи путь";return;}
+  img.onload=()=>{img.style.display="block";ph.style.display="none";};
+  img.onerror=()=>{img.style.display="none";ph.textContent="Картинка не найдена";ph.style.display="block";};
+  img.src=p.startsWith("http")?p:"../"+p;
+}
+function genCode(){
+  const g=id=>document.getElementById(id).value.trim();
+  const code=`,{
+    id: "${g("f-id")||"new_character"}",
+    name: "${g("f-name")||"Новый"}",
+    category: "${g("f-cat")}",
+    rarity: "${g("f-rar")}",
+    image: "${g("f-img")||"images/anime/placeholder.png"}",
+    desc: "${(g("f-desc")||"").replace(/"/g,'\\"')}",
+    clickBonus: ${parseInt(g("f-click"))||0},
+    cpsBonus: ${parseInt(g("f-cps"))||0},
+    price: ${parseInt(g("f-price"))||0},
+    gemPrice: ${parseInt(g("f-gem"))||0},
+    isDefault: ${g("f-def")==="true"}
+  }`;
+  document.getElementById("genCode").textContent=code;
+}
+function copyCode(){
+  navigator.clipboard.writeText(document.getElementById("genCode").textContent)
+    .then(()=>showAlert("addAlert","Код скопирован! Вставь в js/characters.js перед закрывающей ]","ok"))
+    .catch(()=>showAlert("addAlert","Скопируй вручную из поля выше","err"));
+}
+function resetForm(){
+  ["f-id","f-name","f-img","f-desc"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("f-click").value="1";
+  document.getElementById("f-cps").value="0";
+  document.getElementById("f-price").value="500";
+  document.getElementById("f-gem").value="0";
+  document.getElementById("f-rar").value="SR";
+  document.getElementById("f-cat").value="anime";
+  document.getElementById("f-def").value="false";
+  document.getElementById("prevImg").style.display="none";
+  document.getElementById("prevPh").textContent="Укажи путь";
+  genCode();updPrev();
+}
+
+/* CHANNELS */
+function renderChList(){
+  const list=(typeof CHANNELS!=="undefined"?CHANNELS:[]);
+  const c=document.getElementById("chList");
+  if(!list.length){c.innerHTML=`<div style="color:var(--text2);font-size:13px;padding:20px 0">Заданий нет. Добавь первое!</div>`;return;}
+  c.innerHTML=list.map(ch=>{
+    const rtLabel={clicks_percent:"% кликов",coins:"монеты",gems:"кристаллы"}[ch.rewardType]||ch.rewardType;
+    const rtClass={clicks_percent:"pct",coins:"coins",gems:"gems"}[ch.rewardType]||"pct";
+    const rewardStr=ch.rewardType==="clicks_percent"
+      ?`${ch.rewardValue}% от кликов, мин. ${ch.minReward}`
+      :ch.rewardType==="gems"?`◆ ${ch.rewardValue} кристаллов`
+      :`★ ${ch.rewardValue} монет`;
+    return `<div class="ch-card">
+      <div class="ch-icon">${ch.icon}</div>
+      <div class="ch-body">
+        <div class="ch-title">${ch.title} <span class="rtype ${rtClass}">${rtLabel}</span></div>
+        <div class="ch-meta">${ch.channelId} · <a href="${ch.url}" target="_blank">${ch.url}</a></div>
+        <div class="ch-reward">Награда: ${rewardStr}</div>
+      </div>
+      <div class="ch-actions">
+        <span class="badge ${ch.active?"bon":"boff"}">${ch.active?"Активно":"Выкл"}</span>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function toggleRewardFields(){
+  const t=document.getElementById("ch-rtype").value;
+  const minWrap=document.getElementById("ch-min-wrap");
+  const lbl=document.getElementById("ch-rval-lbl");
+  const hint=document.getElementById("ch-rval-hint");
+  if(t==="clicks_percent"){
+    lbl.textContent="Процент от кликов";hint.textContent="10–30% — оптимально";
+    minWrap.style.display="block";
+  } else if(t==="coins"){
+    lbl.textContent="Кол-во монет";hint.textContent="Фиксированная сумма";
+    minWrap.style.display="none";
+  } else {
+    lbl.textContent="Кол-во кристаллов";hint.textContent="Рекомендуем 20–50";
+    minWrap.style.display="none";
+  }
+  updateRewardPreview(); genChCode();
+}
+
+function updateRewardPreview(){
+  const t=document.getElementById("ch-rtype").value;
+  const v=parseInt(document.getElementById("ch-rval").value)||0;
+  const m=parseInt(document.getElementById("ch-min").value)||0;
+  let txt="";
+  if(t==="clicks_percent") txt=`Примеры: новичок 500 кликов → ${Math.max(Math.floor(500*v/100),m)} монет | 10K кликов → ${Math.max(Math.floor(10000*v/100),m)} монет | 1M кликов → ${Math.max(Math.floor(1000000*v/100),m)} монет`;
+  else if(t==="coins") txt=`Все игроки получат ★ ${v} монет`;
+  else txt=`Все игроки получат ◆ ${v} кристаллов`;
+  document.getElementById("rewardPreview").textContent=txt;
+}
+
+document.getElementById("ch-rval").oninput=()=>{updateRewardPreview();genChCode();};
+document.getElementById("ch-min").oninput=()=>{updateRewardPreview();genChCode();};
+
+function genChCode(){
+  const g=id=>document.getElementById(id).value.trim();
+  const t=g("ch-rtype"),v=parseInt(g("ch-rval"))||20,m=parseInt(g("ch-min"))||0;
+  const minLine=t==="clicks_percent"?`\n    minReward: ${m},`:"";
+  const code=`,{
+    id: "${g("ch-id")||"ch_new"}",
+    channelId: "${g("ch-chanid")||"@channel"}",
+    title: "${g("ch-title")||"Подпишись на канал"}",
+    description: "${g("ch-desc")||""}",
+    url: "${g("ch-url")||"https://t.me/channel"}",
+    rewardType: "${t}",
+    rewardValue: ${v},${minLine}
+    active: true,
+    icon: "${g("ch-icon")||"⭐"}"
+  }`;
+  document.getElementById("chCode").textContent=code;
+}
+
+function copyChCode(){
+  navigator.clipboard.writeText(document.getElementById("chCode").textContent)
+    .then(()=>showAlert("chAlert","Код скопирован! Вставь в js/channels.js перед закрывающей ]","ok"))
+    .catch(()=>showAlert("chAlert","Скопируй вручную из поля выше","err"));
+}
+function resetChForm(){
+  ["ch-id","ch-icon","ch-title","ch-desc","ch-chanid","ch-url"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("ch-rtype").value="clicks_percent";
+  document.getElementById("ch-rval").value="20";
+  document.getElementById("ch-min").value="500";
+  toggleRewardFields(); genChCode();
+}
+
+/* ALERT */
+function showAlert(id,msg,type){
+  const el=document.getElementById(id);
+  el.textContent=msg; el.className="alert "+type+" show";
+  setTimeout(()=>el.classList.remove("show"),4000);
+}
+
+/* INIT */
+renderDash(); genCode(); updPrev(); genChCode(); toggleRewardFields();
+</script>
+</body>
+</html>
