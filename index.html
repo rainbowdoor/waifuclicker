@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>WaifuClicker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="stylesheet" href="css/game.css">
+<style>
+/* ── ACTION BUTTONS ── */
+.action-buttons{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:0 14px 10px;flex-shrink:0}
+.action-btn{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);
+  color:var(--text);font-family:'Nunito',sans-serif;font-size:11px;font-weight:700;
+  padding:8px 4px;cursor:pointer;transition:all .2s;text-align:center;line-height:1.4}
+.action-btn:hover{background:var(--card-hover);border-color:var(--accent)}
+.action-btn:active{transform:scale(.96)}
+.gacha-action{border-color:rgba(183,108,255,.4);color:var(--accent)}
+.tasks-action{border-color:rgba(255,200,80,.3);color:#ffc850}
+.refer-action{border-color:rgba(96,207,255,.3);color:var(--gem)}
+.leader-action{border-color:rgba(255,215,0,.3);color:var(--gold)}
+.stars-action{border-color:rgba(255,108,183,.3);color:#ff6cb7}
+
+/* ── MODALS ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;
+  width:100%;max-width:480px;padding:20px 20px 32px;position:relative;
+  animation:slide-up .25s ease-out;max-height:90vh;overflow-y:auto}
+.modal-wide{max-height:95vh}
+@keyframes slide-up{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-close{position:absolute;top:14px;right:14px;background:var(--card);border:1px solid var(--border);
+  border-radius:50%;width:30px;height:30px;color:var(--text2);font-size:13px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center}
+.modal-title-bar{font-family:'Orbitron',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+
+/* char modal */
+.modal-img{width:110px;height:140px;object-fit:cover;border-radius:var(--radius-sm);border:1px solid var(--border);float:right;margin:0 0 10px 14px;background:var(--bg3)}
+.modal-name{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;color:var(--text)}
+.modal-rarity{font-size:13px;color:var(--gold);margin-top:4px}
+.modal-category{font-size:11px;color:var(--text2);margin-top:3px;text-transform:uppercase;letter-spacing:1px}
+.modal-desc{font-size:13px;color:var(--text2);margin-top:10px;line-height:1.5;clear:both}
+.modal-stats{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.modal-stat{background:var(--bg3);border-radius:var(--radius-sm);padding:6px 12px;font-size:12px;color:var(--text)}
+.modal-stat span{color:var(--accent);font-weight:700}
+.modal-actions{display:flex;gap:8px;margin-top:16px}
+.btn-primary{flex:1;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:var(--radius-sm);color:#fff;font-size:14px;font-weight:700;font-family:'Nunito',sans-serif;padding:12px;cursor:pointer;transition:opacity .2s,transform .1s}
+.btn-primary:hover{opacity:.9}
+.btn-primary:active{transform:scale(.98)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-secondary{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;font-weight:700;font-family:'Nunito',sans-serif;padding:12px;cursor:pointer;transition:background .2s}
+.btn-secondary:hover{background:var(--card-hover)}
+
+/* gacha */
+.gacha-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.gacha-title{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;color:var(--accent)}
+.gacha-rates{display:flex;gap:6px}
+.rate-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px}
+.ssr-badge{background:rgba(255,215,0,.15);color:var(--gold)}
+.sr-badge{background:rgba(183,108,255,.15);color:var(--accent)}
+.r-badge{background:rgba(96,207,255,.15);color:var(--gem)}
+.gacha-pity{font-size:12px;color:var(--text2);margin-bottom:12px}
+.gacha-pity strong{color:var(--accent)}
+.gacha-result-area{min-height:140px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;padding:8px 0;margin-bottom:12px}
+.gacha-placeholder{color:var(--text2);font-size:13px;text-align:center;padding:20px}
+.gacha-card{width:80px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;text-align:center;position:relative;animation:pop-in .3s ease-out both}
+@keyframes pop-in{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+.gacha-card-img{width:100%;height:96px;object-fit:cover;display:block}
+.gacha-card-rarity{font-size:9px;font-weight:700;padding:2px 0;letter-spacing:.5px}
+.gacha-card-name{font-size:10px;font-weight:700;padding:0 4px 4px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gacha-new-badge{position:absolute;top:3px;right:3px;background:#ff6cb7;color:#fff;font-size:8px;font-weight:900;border-radius:20px;padding:1px 5px}
+.gacha-btns{display:flex;gap:10px}
+.gacha-btn{flex:1;border:none;border-radius:var(--radius-sm);padding:12px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s;text-align:center}
+.gacha-1{background:var(--bg3);border:1px solid var(--accent);color:var(--text)}
+.gacha-10{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.gacha-btn:hover{opacity:.85}
+.gacha-btn:active{transform:scale(.97)}
+.gacha-btn-label{font-size:13px;font-weight:700}
+.gacha-btn-cost{font-size:12px;color:var(--gem);margin-top:3px}
+.gacha-10 .gacha-btn-cost{color:rgba(255,255,255,.8)}
+.gacha-footer{text-align:center;font-size:12px;color:var(--text2);margin-top:10px}
+
+/* stars shop */
+.stars-subtitle{font-size:12px;color:var(--text2);margin-bottom:14px}
+.stars-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stars-pack{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+.stars-pack:hover{border-color:var(--accent);background:var(--card-hover)}
+.stars-pack:active{transform:scale(.97)}
+.stars-pack.popular{border-color:var(--gold);border-width:2px}
+.stars-pack-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--gold);color:#1a0533;font-size:10px;font-weight:900;border-radius:20px;padding:2px 10px;white-space:nowrap}
+.stars-pack-gems{font-size:22px;font-weight:900;color:var(--gem);margin-bottom:4px}
+.stars-pack-name{font-size:12px;color:var(--text2);margin-bottom:6px}
+.stars-pack-price{font-size:13px;font-weight:700;color:var(--gold)}
+.stars-note{font-size:11px;color:var(--text2);text-align:center;margin-top:14px}
+
+/* referral */
+.referral-rewards{display:flex;gap:10px;margin-bottom:16px}
+.ref-reward-card{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center}
+.ref-reward-icon{font-size:24px;margin-bottom:6px}
+.ref-reward-text{font-size:12px;color:var(--text2);line-height:1.6}
+.ref-link-wrap{display:flex;gap:8px}
+.ref-link-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:12px;padding:8px 10px;font-family:'Nunito',sans-serif;min-width:0}
+.ref-copy-btn{background:var(--accent);border:none;border-radius:var(--radius-sm);color:#fff;font-size:13px;font-weight:700;padding:8px 16px;cursor:pointer;white-space:nowrap;font-family:'Nunito',sans-serif}
+
+/* tasks */
+.tasks-subtitle{font-size:12px;color:var(--text2);margin-bottom:4px}
+.task-card{display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px;transition:border-color .2s}
+.task-card.task-done{border-color:rgba(80,200,120,.4);background:rgba(80,200,120,.05)}
+.task-icon{font-size:24px;flex-shrink:0;width:36px;text-align:center}
+.task-body{flex:1;min-width:0}
+.task-title{font-size:13px;font-weight:700;color:var(--text)}
+.task-desc{font-size:11px;color:var(--text2);margin-top:2px}
+.task-reward{font-size:11px;color:var(--text2);margin-top:4px}
+.task-reward strong{color:var(--accent)}
+.task-action{flex-shrink:0}
+.task-sub-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:20px;color:#fff;font-size:12px;font-weight:700;padding:6px 14px;cursor:pointer;text-decoration:none;display:inline-block;font-family:'Nunito',sans-serif;white-space:nowrap}
+.task-check{color:#50c878;font-size:13px;font-weight:700;padding:6px 10px}
+
+/* leaderboard */
+.lb-row.lb-me td{background:rgba(183,108,255,.08)}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="game">⭐ Игра</button>
+    <button class="tab" data-tab="shop">🛍 Магазин</button>
+    <button class="tab" data-tab="collection">💎 Коллекция</button>
+  </nav>
+
+  <!-- GAME -->
+  <section id="tab-game" class="tab-content active">
+    <div class="top-bar">
+      <div class="level-badge" id="levelBadge">Ур. 1</div>
+      <div class="coins-box"><span class="coin-icon">★</span><span id="coinsDisplay">0</span></div>
+      <div class="gems-box"><span class="gem-icon">◆</span><span id="gemsDisplay">0</span></div>
+    </div>
+    <div class="xp-wrap"><div class="xp-bar" id="xpBar"></div></div>
+    <div class="waifu-stage">
+      <div class="waifu-aura"></div>
+      <div class="waifu-click-zone" id="waifuClickZone">
+        <img id="waifuImg" src="images/anime/sakura.svg" alt="Вайфу" draggable="false">
+        <div class="click-ripple" id="ripple"></div>
+      </div>
+      <div class="waifu-info">
+        <div class="waifu-name" id="waifuName">Sakura</div>
+        <div class="waifu-rarity" id="waifuRarity">★★★ SR</div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-label">Клики</div><div class="stat-val" id="clicksDisplay">0</div></div>
+      <div class="stat-card"><div class="stat-label">За клик</div><div class="stat-val" id="perClickDisplay">1</div></div>
+      <div class="stat-card"><div class="stat-label">В сек</div><div class="stat-val" id="cpsDisplay">0</div></div>
+    </div>
+    <div class="action-buttons">
+      <button class="action-btn gacha-action" id="openGachaBtn">✦<br>Гача</button>
+      <button class="action-btn tasks-action" id="openTasksBtn">📋<br>Задания</button>
+      <button class="action-btn refer-action" id="openReferralBtn">👥<br>Рефералы</button>
+      <button class="action-btn leader-action" id="openLeaderboardBtn">🏆<br>Топ</button>
+      <button class="action-btn stars-action" id="openStarsBtn">⭐<br>Купить ◆</button>
+    </div>
+    <div class="upgrades-label">Улучшения</div>
+    <div class="upgrades-grid" id="upgradesGrid"></div>
+  </section>
+
+  <!-- SHOP -->
+  <section id="tab-shop" class="tab-content">
+    <div class="shop-header">
+      <h2>Магазин персонажей</h2>
+      <div class="shop-filter">
+        <button class="filter-btn active" data-cat="all">Все</button>
+        <button class="filter-btn" data-cat="anime">Аниме</button>
+        <button class="filter-btn" data-cat="game">Игровые</button>
+      </div>
+    </div>
+    <div class="shop-grid" id="shopGrid"></div>
+  </section>
+
+  <!-- COLLECTION -->
+  <section id="tab-collection" class="tab-content">
+    <div class="shop-header">
+      <h2>Моя коллекция</h2>
+      <div class="shop-filter">
+        <button class="filter-btn active" data-cat="all">Все</button>
+        <button class="filter-btn" data-cat="anime">Аниме</button>
+        <button class="filter-btn" data-cat="game">Игровые</button>
+      </div>
+    </div>
+    <div class="shop-grid" id="collectionGrid"></div>
+  </section>
+</div>
+
+<div id="floats"></div>
+
+<!-- MODAL: ПЕРСОНАЖ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-card">
+    <button class="modal-close" id="modalClose">✕</button>
+    <img class="modal-img" id="modalImg" src="" alt="">
+    <div class="modal-name" id="modalName"></div>
+    <div class="modal-rarity" id="modalRarity"></div>
+    <div class="modal-category" id="modalCategory"></div>
+    <div class="modal-desc" id="modalDesc"></div>
+    <div class="modal-stats" id="modalStats"></div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<!-- MODAL: ГАЧА -->
+<div class="modal-overlay" id="gachaModal">
+  <div class="modal-card modal-wide">
+    <button class="modal-close" id="gachaModalClose">✕</button>
+    <div class="gacha-header">
+      <div class="gacha-title">✦ Портал Судьбы</div>
+      <div class="gacha-rates">
+        <span class="rate-badge ssr-badge">SSR 5%</span>
+        <span class="rate-badge sr-badge">SR 15%</span>
+        <span class="rate-badge r-badge">R 30%</span>
+      </div>
+    </div>
+    <div class="gacha-pity">Гарантия SSR через: <strong id="gachaPityLeft">90</strong> круток</div>
+    <div class="gacha-result-area" id="gachaResultArea"><div class="gacha-placeholder">Нажми крутить!</div></div>
+    <div class="gacha-btns">
+      <button class="gacha-btn gacha-1" onclick="doPull(1)">
+        <div class="gacha-btn-label">×1 крутка</div>
+        <div class="gacha-btn-cost">◆ 10</div>
+      </button>
+      <button class="gacha-btn gacha-10" onclick="doPull(10)">
+        <div class="gacha-btn-label">×10 круток</div>
+        <div class="gacha-btn-cost">◆ 90 <s style="opacity:.45;font-size:10px">100</s></div>
+      </button>
+    </div>
+    <div class="gacha-footer">У тебя: <strong style="color:var(--gem)">◆ <span id="gachaGemsCount">0</span></strong></div>
+  </div>
+</div>
+
+<!-- MODAL: ЛИДЕРЫ -->
+<div class="modal-overlay" id="leaderboardModal">
+  <div class="modal-card">
+    <button class="modal-close" id="leaderboardModalClose">✕</button>
+    <div class="modal-title-bar">🏆 Таблица лидеров</div>
+    <div id="leaderboardContent" style="max-height:55vh;overflow-y:auto;margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- MODAL: STARS -->
+<div class="modal-overlay" id="starsModal">
+  <div class="modal-card">
+    <button class="modal-close" id="starsModalClose">✕</button>
+    <div class="modal-title-bar">⭐ Купить кристаллы</div>
+    <div class="stars-subtitle">Покупаются за Telegram Stars</div>
+    <div class="stars-grid">
+      <div class="stars-pack" onclick="buyGems('small')">
+        <div class="stars-pack-gems">◆ 50</div>
+        <div class="stars-pack-name">Стартовый</div>
+        <div class="stars-pack-price">⭐ 50 Stars</div>
+      </div>
+      <div class="stars-pack popular" onclick="buyGems('medium')">
+        <div class="stars-pack-badge">Популярный</div>
+        <div class="stars-pack-gems">◆ 130</div>
+        <div class="stars-pack-name">Стандарт</div>
+        <div class="stars-pack-price">⭐ 100 Stars</div>
+      </div>
+      <div class="stars-pack" onclick="buyGems('large')">
+        <div class="stars-pack-gems">◆ 300</div>
+        <div class="stars-pack-name">Большой</div>
+        <div class="stars-pack-price">⭐ 200 Stars</div>
+      </div>
+      <div class="stars-pack" onclick="buyGems('mega')">
+        <div class="stars-pack-gems">◆ 700</div>
+        <div class="stars-pack-name">Мега</div>
+        <div class="stars-pack-price">⭐ 400 Stars</div>
+      </div>
+    </div>
+    <div class="stars-note">Купить Stars: Настройки Telegram → Telegram Stars</div>
+  </div>
+</div>
+
+<!-- MODAL: РЕФЕРАЛЫ -->
+<div class="modal-overlay" id="referralModal">
+  <div class="modal-card">
+    <button class="modal-close" id="referralModalClose">✕</button>
+    <div class="modal-title-bar">👥 Пригласи друзей</div>
+    <div class="referral-rewards">
+      <div class="ref-reward-card">
+        <div class="ref-reward-icon">🎁</div>
+        <div class="ref-reward-text">Ты получаешь<br><strong style="color:var(--gem)">◆ 15 кристаллов</strong></div>
+      </div>
+      <div class="ref-reward-card">
+        <div class="ref-reward-icon">💎</div>
+        <div class="ref-reward-text">Друг получает<br><strong style="color:var(--gem)">◆ 10 кристаллов</strong></div>
+      </div>
+    </div>
+    <div class="ref-link-wrap">
+      <input class="ref-link-input" id="referralLink" readonly value="">
+      <button class="ref-copy-btn" onclick="copyReferralLink()">Копировать</button>
+    </div>
+    <button class="btn-primary" style="width:100%;margin-top:10px" onclick="shareReferral()">📤 Поделиться в Telegram</button>
+  </div>
+</div>
+
+<!-- MODAL: ЗАДАНИЯ -->
+<div class="modal-overlay" id="tasksModal">
+  <div class="modal-card">
+    <button class="modal-close" id="tasksModalClose">✕</button>
+    <div class="modal-title-bar">📋 Задания</div>
+    <div class="tasks-subtitle">Подпишись — получи бонусы!</div>
+    <div id="tasksContent" style="max-height:60vh;overflow-y:auto;margin-top:12px"></div>
+  </div>
+</div>
+
+<script src="js/characters.js"></script>
+<script src="js/channels.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
