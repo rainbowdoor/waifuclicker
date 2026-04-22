@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280">
+  <rect width="200" height="280" fill="#1a0505" rx="12"/>
+  <path d="M62 174 Q67 242 100 247 Q133 242 138 174" fill="#8b0000" opacity="0.9"/>
+  <path d="M66 194 Q80 226 100 230 Q120 226 134 194" fill="#c04040" opacity="0.4"/>
+  <ellipse cx="100" cy="154" rx="28" ry="35" fill="#ffe0e0"/>
+  <rect x="92" y="117" width="16" height="18" rx="7" fill="#ffe0e0"/>
+  <ellipse cx="100" cy="100" rx="34" ry="36" fill="#ffe0e0"/>
+  <ellipse cx="100" cy="93" rx="37" ry="40" fill="#1a0505"/>
+  <path d="M64 82 Q66 48 100 44 Q134 48 136 82 Q127 66 100 64 Q73 66 64 82" fill="#2a0808"/>
+  <path d="M64 82 Q53 107 57 131" stroke="#2a0808" stroke-width="11" fill="none" stroke-linecap="round"/>
+  <path d="M136 82 Q147 107 143 131" stroke="#2a0808" stroke-width="11" fill="none" stroke-linecap="round"/>
+  <!-- demon horns -->
+  <path d="M80 62 Q74 40 70 32 Q78 42 84 56" fill="#8b0000"/>
+  <path d="M120 62 Q126 40 130 32 Q122 42 116 56" fill="#8b0000"/>
+  <!-- tail -->
+  <path d="M130 200 Q160 220 155 245 Q148 238 145 225 Q150 215 135 205" fill="#8b0000" opacity="0.8"/>
+  <ellipse cx="86" cy="100" rx="7" ry="8" fill="white"/>
+  <ellipse cx="114" cy="100" rx="7" ry="8" fill="white"/>
+  <ellipse cx="87" cy="101" rx="5" ry="6" fill="#8b0000"/>
+  <ellipse cx="115" cy="101" rx="5" ry="6" fill="#8b0000"/>
+  <ellipse cx="88" cy="99" rx="2.5" ry="3" fill="#1a0505"/>
+  <ellipse cx="116" cy="99" rx="2.5" ry="3" fill="#1a0505"/>
+  <ellipse cx="87.5" cy="98" rx="1.2" ry="1.2" fill="white"/>
+  <ellipse cx="115.5" cy="98" rx="1.2" ry="1.2" fill="white"/>
+  <ellipse cx="76" cy="108" rx="8" ry="5" fill="#ff8080" opacity="0.4"/>
+  <ellipse cx="124" cy="108" rx="8" ry="5" fill="#ff8080" opacity="0.4"/>
+  <path d="M93 116 Q100 121 107 116" stroke="#c04040" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <!-- fangs -->
+  <polygon points="97,118 99,125 101,118" fill="white"/>
+  <polygon points="101,118 103,125 105,118" fill="white"/>
+  <path d="M72 144 Q53 162 56 178" stroke="#ffe0e0" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <path d="M128 144 Q147 162 144 178" stroke="#ffe0e0" stroke-width="12" fill="none" stroke-linecap="round"/>
+</svg>

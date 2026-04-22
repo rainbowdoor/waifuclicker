@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280">
+  <rect width="200" height="280" fill="#080818" rx="12"/>
+  <path d="M62 174 Q67 242 100 247 Q133 242 138 174" fill="#1a0a3a" opacity="0.95"/>
+  <path d="M66 194 Q80 226 100 230 Q120 226 134 194" fill="#5030a0" opacity="0.5"/>
+  <ellipse cx="100" cy="154" rx="28" ry="35" fill="#e8d8ff"/>
+  <rect x="92" y="117" width="16" height="18" rx="7" fill="#e8d8ff"/>
+  <ellipse cx="100" cy="100" rx="34" ry="36" fill="#e8d8ff"/>
+  <ellipse cx="100" cy="93" rx="37" ry="40" fill="#0a0020"/>
+  <path d="M64 82 Q66 48 100 44 Q134 48 136 82 Q127 66 100 64 Q73 66 64 82" fill="#14003c"/>
+  <path d="M64 82 Q53 107 57 131" stroke="#0a0020" stroke-width="11" fill="none" stroke-linecap="round"/>
+  <path d="M136 82 Q147 107 143 131" stroke="#0a0020" stroke-width="11" fill="none" stroke-linecap="round"/>
+  <!-- star mark on forehead -->
+  <polygon points="100,72 101.5,76.5 106,76.5 102.5,79 104,83.5 100,81 96,83.5 97.5,79 94,76.5 98.5,76.5" fill="#7B2FBE"/>
+  <ellipse cx="86" cy="100" rx="7" ry="8" fill="white"/>
+  <ellipse cx="114" cy="100" rx="7" ry="8" fill="white"/>
+  <ellipse cx="87" cy="101" rx="5" ry="6" fill="#3a0080"/>
+  <ellipse cx="115" cy="101" rx="5" ry="6" fill="#3a0080"/>
+  <ellipse cx="88" cy="99" rx="2.5" ry="3" fill="#080818"/>
+  <ellipse cx="116" cy="99" rx="2.5" ry="3" fill="#080818"/>
+  <ellipse cx="87.5" cy="98" rx="1.2" ry="1.2" fill="white"/>
+  <ellipse cx="115.5" cy="98" rx="1.2" ry="1.2" fill="white"/>
+  <ellipse cx="76" cy="108" rx="8" ry="5" fill="#c080ff" opacity="0.35"/>
+  <ellipse cx="124" cy="108" rx="8" ry="5" fill="#c080ff" opacity="0.35"/>
+  <path d="M93 116 Q100 121 107 116" stroke="#8040c0" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <path d="M72 144 Q53 162 56 178" stroke="#e8d8ff" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <path d="M128 144 Q147 162 144 178" stroke="#e8d8ff" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <!-- magic staff -->
+  <line x1="150" y1="80" x2="150" y2="220" stroke="#5030a0" stroke-width="4"/>
+  <circle cx="150" cy="76" r="8" fill="#7B2FBE"/>
+  <circle cx="150" cy="76" r="4" fill="#c080ff"/>
+</svg>

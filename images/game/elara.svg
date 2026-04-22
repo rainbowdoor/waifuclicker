@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280">
+  <rect width="200" height="280" fill="#0a1a0a" rx="12"/>
+  <path d="M63 174 Q68 242 100 247 Q132 242 137 174" fill="#2d6e2d" opacity="0.9"/>
+  <path d="M67 194 Q80 226 100 230 Q120 226 133 194" fill="#5aad5a" opacity="0.4"/>
+  <ellipse cx="100" cy="154" rx="28" ry="35" fill="#f0e0c8"/>
+  <rect x="92" y="117" width="16" height="18" rx="7" fill="#f0e0c8"/>
+  <ellipse cx="100" cy="100" rx="34" ry="36" fill="#f0e0c8"/>
+  <ellipse cx="100" cy="93" rx="37" ry="40" fill="#8B6914"/>
+  <path d="M64 82 Q66 48 100 44 Q134 48 136 82 Q127 66 100 64 Q73 66 64 82" fill="#a07820"/>
+  <!-- elf ears -->
+  <path d="M66 100 Q52 95 54 88 Q60 96 68 98" fill="#f0e0c8"/>
+  <path d="M134 100 Q148 95 146 88 Q140 96 132 98" fill="#f0e0c8"/>
+  <path d="M64 82 Q53 107 57 131" stroke="#8B6914" stroke-width="11" fill="none" stroke-linecap="round"/>
+  <path d="M136 82 Q147 107 143 131" stroke="#8B6914" stroke-width="11" fill="none" stroke-linecap="round"/>
+  <ellipse cx="86" cy="100" rx="7" ry="8" fill="white"/>
+  <ellipse cx="114" cy="100" rx="7" ry="8" fill="white"/>
+  <ellipse cx="87" cy="101" rx="5" ry="6" fill="#1a5c1a"/>
+  <ellipse cx="115" cy="101" rx="5" ry="6" fill="#1a5c1a"/>
+  <ellipse cx="88" cy="99" rx="2.5" ry="3" fill="#0a1a0a"/>
+  <ellipse cx="116" cy="99" rx="2.5" ry="3" fill="#0a1a0a"/>
+  <ellipse cx="87.5" cy="98" rx="1.2" ry="1.2" fill="white"/>
+  <ellipse cx="115.5" cy="98" rx="1.2" ry="1.2" fill="white"/>
+  <ellipse cx="76" cy="108" rx="8" ry="5" fill="#f0a080" opacity="0.4"/>
+  <ellipse cx="124" cy="108" rx="8" ry="5" fill="#f0a080" opacity="0.4"/>
+  <path d="M93 116 Q100 121 107 116" stroke="#c08060" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <!-- crown/tiara -->
+  <path d="M78 66 L82 56 L88 64 L94 52 L100 62 L106 52 L112 64 L118 56 L122 66" stroke="#FFD700" stroke-width="2" fill="none"/>
+  <path d="M72 144 Q53 162 56 178" stroke="#f0e0c8" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <path d="M128 144 Q147 162 144 178" stroke="#f0e0c8" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <!-- bow -->
+  <path d="M148 120 Q158 140 148 165" stroke="#8B6914" stroke-width="3" fill="none"/>
+  <line x1="148" y1="120" x2="148" y2="165" stroke="#f0e0c8" stroke-width="1"/>
+</svg>
